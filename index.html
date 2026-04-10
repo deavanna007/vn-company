@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>VN COMPANY — Roblox Top-Up</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #111111;
+            --bg-secondary: #1a1a1a;
+            --bg-card: #222222;
+            --bg-card-hover: #2a2a2a;
+            --bg-card-selected: #2d1f00;
+            --accent-orange: #FF7A00;
+            --accent-orange-glow: rgba(255, 122, 0, 0.3);
+            --accent-orange-subtle: rgba(255, 122, 0, 0.08);
+            --accent-blue: #2A7BFF;
+            --accent-blue-glow: rgba(42, 123, 255, 0.35);
+            --text-primary: #FFFFFF;
+            --text-secondary: #999999;
+            --text-muted: #666666;
+            --border-color: #2e2e2e;
+            --border-selected: #FF7A00;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background atmosphere */
+        .bg-atmosphere {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-atmosphere::before {
+            content: '';
+            position: absolute;
+            top: -30%; left: -20%;
+            width: 60vw; height: 60vw;
+            background: radial-gradient(circle, rgba(255,122,0,0.06) 0%, transparent 70%);
+            animation: floatBlob1 18s ease-in-out infinite;
+        }
+
+        .bg-atmosphere::after {
+            content: '';
+            position: absolute;
+            bottom: -20%; right: -20%;
+            width: 50vw; height: 50vw;
+            background: radial-gradient(circle, rgba(42,123,255,0.04) 0%, transparent 70%);
+            animation: floatBlob2 22s ease-in-out infinite;
+        }
+
+        @keyframes floatBlob1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(10vw, 5vh) scale(1.15); }
+            66% { transform: translate(-5vw, 10vh) scale(0.9); }
+        }
+
+        @keyframes floatBlob2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-8vw, -8vh) scale(1.2); }
+        }
+
+        /* Noise overlay */
+        .noise-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.025;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+            background-repeat: repeat;
+            background-size: 256px 256px;
+        }
+
+        /* Sticky header */
+        .site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(17, 17, 17, 0.85);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .site-header.scrolled {
+            box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+        }
+
+        .logo-text {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            letter-spacing: 2px;
+            font-size: 1.1rem;
+            background: linear-gradient(135deg, #FF7A00 0%, #FFB347 50%, #FF7A00 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: shimmerLogo 4s linear infinite;
+        }
+
+        @keyframes shimmerLogo {
+            0% { background-position: 0% center; }
+            100% { background-position: 200% center; }
+        }
+
+        .tg-icon-btn {
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2AABEE, #229ED9);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 2px 12px rgba(34, 158, 217, 0.3);
+            text-decoration: none;
+        }
+
+        .tg-icon-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 20px rgba(34, 158, 217, 0.5);
+        }
+
+        .tg-icon-btn:active { transform: scale(0.95); }
+
+        /* Main content */
+        .main-content {
+            position: relative;
+            z-index: 2;
+            max-width: 480px;
+            margin: 0 auto;
+            padding: 0 16px 120px;
+        }
+
+        /* Section titles */
+        .section-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: var(--accent-orange);
+            margin-bottom: 12px;
+        }
+
+        /* Input card */
+        .input-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-card:focus-within {
+            border-color: var(--accent-orange);
+            box-shadow: 0 0 0 3px var(--accent-orange-glow), 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .input-field {
+            width: 100%;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 14px 16px;
+            color: var(--text-primary);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .input-field::placeholder { color: var(--text-muted); }
+
+        .input-field:focus {
+            border-color: var(--accent-orange);
+            background: rgba(255, 122, 0, 0.04);
+        }
+
+        /* Robux cards grid */
+        .robux-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .robux-card {
+            position: relative;
+            background: var(--bg-card);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 20px 14px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .robux-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: linear-gradient(135deg, rgba(255,122,0,0.05) 0%, transparent 50%);
+            opacity: 0;
+            transition: opacity 0.35s ease;
+        }
+
+        .robux-card:hover {
+            border-color: rgba(255, 122, 0, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .robux-card:hover::before { opacity: 1; }
+
+        .robux-card.selected {
+            border-color: var(--border-selected);
+            background: var(--bg-card-selected);
+            box-shadow: 0 0 0 3px var(--accent-orange-glow), 0 8px 30px rgba(255,122,0,0.15);
+            transform: translateY(-3px);
+        }
+
+        .robux-card.selected::before { opacity: 1; }
+
+        /* Check indicator */
+        .check-indicator {
+            position: absolute;
+            top: 8px; right: 8px;
+            width: 22px; height: 22px;
+            border-radius: 50%;
+            border: 2px solid var(--border-color);
+            display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 10px;
+        }
+
+        .robux-card.selected .check-indicator {
+            background: var(--accent-orange);
+            border-color: var(--accent-orange);
+            color: #000;
+        }
+
+        /* Robux coin icon */
+        .robux-coin {
+            width: 52px; height: 52px;
+            margin: 0 auto 10px;
+            position: relative;
+            animation: coinFloat 3s ease-in-out infinite;
+        }
+
+        .robux-card:nth-child(2) .robux-coin { animation-delay: -0.75s; }
+        .robux-card:nth-child(3) .robux-coin { animation-delay: -1.5s; }
+        .robux-card:nth-child(4) .robux-coin { animation-delay: -2.25s; }
+
+        @keyframes coinFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+        }
+
+        .robux-amount {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.35rem;
+            color: var(--text-primary);
+            line-height: 1;
+            margin-bottom: 4px;
+            position: relative;
+        }
+
+        .robux-label {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .robux-price {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--accent-orange), #FFB347);
+            color: #000;
+            font-family: 'Orbitron', monospace;
+            font-weight: 800;
+            font-size: 0.85rem;
+            padding: 6px 16px;
+            border-radius: 20px;
+            position: relative;
+        }
+
+        /* Popular badge */
+        .popular-badge {
+            position: absolute;
+            top: -1px; left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(135deg, var(--accent-orange), #FFB347);
+            color: #000;
+            font-size: 0.55rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 3px 12px;
+            border-radius: 0 0 8px 8px;
+        }
+
+        /* QR section */
+        .qr-section {
+            margin-top: 24px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.5s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.4s ease,
+                        margin-top 0.4s ease,
+                        padding 0.4s ease;
+            padding: 0 20px;
+        }
+
+        .qr-section.visible {
+            max-height: 600px;
+            opacity: 1;
+            padding: 24px 20px;
+        }
+
+        .qr-container {
+            background: #FFFFFF;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 12px auto;
+            width: fit-content;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+
+        .qr-container img {
+            width: 180px;
+            height: 180px;
+            display: block;
+        }
+
+        .qr-amount-display {
+            font-family: 'Orbitron', monospace;
+            font-weight: 900;
+            font-size: 1.6rem;
+            text-align: center;
+            color: var(--accent-orange);
+        }
+
+        .qr-instruction {
+            text-align: center;
+            color: var(--text-secondary);
+            font-size: 0.82rem;
+            line-height: 1.6;
+            margin-top: 8px;
+        }
+
+        .qr-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border-color), transparent);
+            margin: 16px 0;
+        }
+
+        .qr-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .qr-step {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .step-num {
+            width: 24px; height: 24px;
+            border-radius: 50%;
+            background: var(--accent-orange-subtle);
+            border: 1px solid rgba(255,122,0,0.2);
+            color: var(--accent-orange);
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 0.65rem;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        /* CTA Button */
+        .cta-wrapper {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            z-index: 99;
+            padding: 16px;
+            background: linear-gradient(to top, var(--bg-primary) 60%, transparent);
+            pointer-events: none;
+        }
+
+        .cta-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 448px;
+            margin: 0 auto;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #2A7BFF, #1A5FCC);
+            color: #FFFFFF;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 700;
+            font-size: 0.95rem;
+            border: none;
+            border-radius: 14px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 20px var(--accent-blue-glow);
+            pointer-events: auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+            transition: left 0.6s ease;
+        }
+
+        .cta-btn:hover::before { left: 100%; }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px var(--accent-blue-glow);
+        }
+
+        .cta-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px var(--accent-blue-glow);
+        }
+
+        .cta-btn.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        /* Roblox branding banner */
+        .brand-banner {
+            margin-top: 20px;
+            background: linear-gradient(135deg, rgba(255,122,0,0.08), rgba(255,122,0,0.02));
+            border: 1px solid rgba(255,122,0,0.12);
+            border-radius: 15px;
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .brand-banner-logo {
+            width: 44px; height: 44px;
+            flex-shrink: 0;
+        }
+
+        .brand-banner-text h3 {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .brand-banner-text p {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 200;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            font-size: 0.85rem;
+            max-width: 90%;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+            pointer-events: auto;
+        }
+
+        .toast-icon {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+
+        .toast-icon.warn {
+            background: rgba(255,122,0,0.15);
+            color: var(--accent-orange);
+        }
+
+        .toast-icon.success {
+            background: rgba(34,197,94,0.15);
+            color: #22C55E;
+        }
+
+        /* Footer info */
+        .footer-info {
+            text-align: center;
+            padding: 30px 16px 10px;
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            line-height: 1.8;
+        }
+
+        .footer-info a {
+            color: var(--accent-orange);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+
+        .footer-info a:hover { color: #FFB347; }
+
+        /* Scroll pulse on selected card */
+        @keyframes selectPulse {
+            0% { box-shadow: 0 0 0 0 var(--accent-orange-glow); }
+            70% { box-shadow: 0 0 0 12px rgba(255,122,0,0); }
+            100% { box-shadow: 0 0 0 0 rgba(255,122,0,0); }
+        }
+
+        .robux-card.pulse {
+            animation: selectPulse 0.6s ease-out;
+        }
+
+        /* Particle canvas */
+        #particles-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* Desktop adjustments */
+        @media (min-width: 520px) {
+            .main-content { padding: 0 24px 130px; }
+            .robux-grid { gap: 14px; }
+            .robux-card { padding: 24px 18px; }
+            .robux-amount { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Background atmosphere -->
+    <div class="bg-atmosphere"></div>
+    <div class="noise-overlay"></div>
+    <canvas id="particles-canvas" aria-hidden="true"></canvas>
+
+    <!-- Toast notification -->
+    <div class="toast" id="toast" role="alert" aria-live="polite">
+        <div class="toast-icon warn" id="toast-icon">
+            <i class="fas fa-exclamation"></i>
+        </div>
+        <span id="toast-text">Please enter your Player ID</span>
+    </div>
+
+    <!-- Sticky Header -->
+    <header class="site-header" id="siteHeader">
+        <div style="max-width:480px; margin:0 auto; padding:12px 16px; display:flex; align-items:center; justify-content:space-between;">
+            <div style="display:flex; align-items:center; gap:10px;">
+            <div style="width:40px; height:40px; display:flex; align-items:center; justify-content:center;">
+            <img src="file:///C:/Users/PU%20IT/Downloads/vn_company_logo.svg" alt="VN COMPANY Logo" style="width:100%; height:100%; object-fit:contain; border-radius:4px;">
+            </div>
+            <span class="logo-text" style="font-family:'Orbitron', sans-serif; font-weight:700; letter-spacing:1px;">VN COMPANY</span>
+        </div>
+        
+        <a href="https://t.me/vncompany1" target="_blank" rel="noopener noreferrer" class="tg-icon-btn" aria-label="Join VN COMPANY on Telegram">
+            <i class="fab fa-telegram-plane" style="color:#fff; font-size:18px;"></i>
+        </a>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+        <!-- Roblox brand banner -->
+        <div class="brand-banner">
+            <img class="brand-banner-logo-image" 
+                 src="file:///C:/Users/PU%20IT/Downloads/logo_roblox_vn.svg" 
+                 alt="Roblox logo"
+                 style="width: 80px; height: 80px; border-radius: 18px; object-fit: cover;">
+                 
+            <div class="brand-banner-text">
+                <h3>Roblox Top-Up</h3>
+                <p>Instant Robux delivery via KHQR payment</p>
+            </div>
+        </div>
+        <!-- Player ID Input -->
+        <div class="input-card">
+            <label for="playerId" style="display:block; font-size:0.8rem; font-weight:600; color:var(--text-secondary); margin-bottom:10px; letter-spacing:0.5px;">
+                <i class="fas fa-user" style="color:var(--accent-orange); margin-right:6px; font-size:0.75rem;"></i>
+                Roblox Username
+            </label>
+            <input 
+                type="text" 
+                id="playerId" 
+                class="input-field" 
+                placeholder="e.g. @mrvn88" 
+                autocomplete="off"
+                aria-label="Enter your Roblox Player ID or Telegram username"
+            >
+        </div>
+
+        <!-- Pricing Section -->
+        <section style="margin-top:28px;" aria-label="Select Robux package">
+            <div class="section-title">Select Package</div>
+            <div class="robux-grid" id="robuxGrid" role="radiogroup" aria-label="Robux packages">
+
+                <!-- 80 Robux -->
+                <div class="robux-card" 
+                    data-robux="80" 
+                    data-price="1.50" 
+                    role="radio" 
+                    aria-checked="false" 
+                    tabindex="0"
+                    aria-label="80 Robux for 1 dollar 50 cents">
+                    
+                    <div class="check-indicator"><i class="fas fa-check"></i></div>
+                    
+                    <div class="robux-coin">
+                        <img src="file:///C:/Users/PU%20IT/Downloads/robux_logo_vn%20(1).svg" alt="Robux" style="width: 52px; height: 52px; object-fit: contain;">
+                    </div>
+                    <div class="robux-amount">80</div>
+                    <div class="robux-label">Robux</div>
+                    <div class="robux-price">$1.50</div>
+                </div>
+
+                <!-- 500 Robux -->
+                <div class="robux-card" 
+                     data-robux="500" 
+                     data-price="5.00" 
+                     role="radio" 
+                     aria-checked="false" 
+                     tabindex="0"
+                     aria-label="500 Robux for 5 dollars">
+                    
+                    <div class="check-indicator"><i class="fas fa-check"></i></div>
+                    
+                    <div class="robux-coin">
+                        <img src="file:///C:/Users/PU%20IT/Downloads/robux_logo_vn%20(1).svg" alt="Robux" style="width: 52px; height: 52px; object-fit: contain;">
+                    </div>
+                    <div class="robux-amount">500</div>
+                    <div class="robux-label">Robux</div>
+                    <div class="robux-price">$5.00</div>
+                </div>
+
+                <!-- 1000 Robux (Popular) -->
+                <div class="robux-card" 
+                     data-robux="1000" 
+                     data-price="10.00" 
+                     role="radio" 
+                     aria-checked="false" 
+                     tabindex="0"
+                     aria-label="1000 Robux for 10 dollars, most popular">
+                    <div class="popular-badge">Popular</div>
+                    
+                    <div class="check-indicator"><i class="fas fa-check"></i></div>
+                    
+                    <div class="robux-coin">
+                        <img src="file:///C:/Users/PU%20IT/Downloads/robux_logo_vn%20(1).svg" alt="Robux" style="width: 52px; height: 52px; object-fit: contain;">
+                    </div>
+                    <div class="robux-amount">1000</div>
+                    <div class="robux-label">Robux</div>
+                    <div class="robux-price">$10.00</div>
+                </div>
+
+                <!-- 2000 Robux -->
+                <div class="robux-card" 
+                     data-robux="2000" 
+                     data-price="20.00" 
+                     role="radio" 
+                     aria-checked="false" 
+                     tabindex="0"
+                     aria-label="2000 Robux for 20 dollars">
+                    
+                    <div class="check-indicator"><i class="fas fa-check"></i></div>
+                    
+                    <div class="robux-coin">
+                        <img src="file:///C:/Users/PU%20IT/Downloads/robux_logo_vn%20(1).svg" alt="Robux" style="width: 52px; height: 52px; object-fit: contain;">
+                    </div>
+                    <div class="robux-amount">2000</div>
+                    <div class="robux-label">Robux</div>
+                    <div class="robux-price">$20.00</div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- QR Payment Section (hidden initially) -->
+        <section class="qr-section" id="qrSection" aria-label="Payment QR code">
+            <div class="section-title">Scan to Pay</div>
+            <div class="qr-amount-display" id="qrAmount">$0.00</div>
+            <div style="text-align:center; font-size:0.75rem; color:var(--text-muted); margin-top:2px;" id="qrRobuxLabel">0 Robux</div>
+
+            <div class="qr-container" id="qrContainer">
+                <img id="qrImage" src="" alt="KHQR Payment Code" width="180" height="180">
+            </div>
+
+            <div class="qr-instruction">
+                Open your banking app and scan this KHQR code to complete payment
+            </div>
+
+            <div class="qr-divider"></div>
+
+            <div class="qr-steps">
+                <div class="qr-step">
+                    <div class="step-num">1</div>
+                    <span>Open your Cambodian banking app (ABA, ACLEDA, etc.)</span>
+                </div>
+                <div class="qr-step">
+                    <div class="step-num">2</div>
+                    <span>Tap "Scan & Pay" and scan the QR code above</span>
+                </div>
+                <div class="qr-step">
+                    <div class="step-num">3</div>
+                    <span>Confirm the exact amount shown and complete payment</span>
+                </div>
+                <div class="qr-step">
+                    <div class="step-num">4</div>
+                    <span>Click the button below to notify our admin for verification</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer info -->
+        <footer class="footer-info">
+            Powered by <strong style="color:var(--text-secondary);">VN COMPANY</strong><br>
+            Fast &amp; secure Roblox top-up service in Cambodia<br>
+            <a href="https://t.me/vncompany1" target="_blank" rel="noopener noreferrer">Join our Telegram channel</a> for updates &amp; support
+        </footer>
+
+    </main>
+
+    <!-- Fixed CTA Button -->
+    <div class="cta-wrapper">
+        <a href="#" 
+           class="cta-btn disabled" 
+           id="ctaBtn" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           role="button"
+           aria-label="Send payment invoice to admin on Telegram">
+            <i class="fab fa-telegram-plane" style="font-size:20px;"></i>
+            <span>Send Payment Invoice to Admin</span>
+        </a>
+    </div>
+
+    <script>
+        // ==================== State ====================
+        let selectedCard = null;
+        let selectedPrice = null;
+        let selectedRobux = null;
+
+        // ==================== DOM References ====================
+        const robuxGrid = document.getElementById('robuxGrid');
+        const qrSection = document.getElementById('qrSection');
+        const qrImage = document.getElementById('qrImage');
+        const qrAmount = document.getElementById('qrAmount');
+        const qrRobuxLabel = document.getElementById('qrRobuxLabel');
+        const ctaBtn = document.getElementById('ctaBtn');
+        const playerIdInput = document.getElementById('playerId');
+        const toastEl = document.getElementById('toast');
+        const toastIcon = document.getElementById('toast-icon');
+        const toastText = document.getElementById('toast-text');
+        const siteHeader = document.getElementById('siteHeader');
+
+        // ==================== Header scroll effect ====================
+        window.addEventListener('scroll', () => {
+            siteHeader.classList.toggle('scrolled', window.scrollY > 10);
+        }, { passive: true });
+
+        // ==================== Toast system ====================
+        let toastTimeout = null;
+        function showToast(message, type = 'warn') {
+            if (toastTimeout) clearTimeout(toastTimeout);
+            toastText.textContent = message;
+            toastIcon.className = 'toast-icon ' + type;
+            toastIcon.innerHTML = type === 'warn'
+                ? '<i class="fas fa-exclamation"></i>'
+                : '<i class="fas fa-check"></i>';
+            toastEl.classList.add('show');
+            toastTimeout = setTimeout(() => {
+                toastEl.classList.remove('show');
+            }, 3000);
+        }
+
+        // ==================== Card selection logic ====================
+        const cards = robuxGrid.querySelectorAll('.robux-card');
+
+        cards.forEach(card => {
+            function selectCard() {
+                const robux = card.dataset.robux;
+                const price = card.dataset.price;
+
+                // Deselect previous
+                cards.forEach(c => {
+                    c.classList.remove('selected', 'pulse');
+                    c.setAttribute('aria-checked', 'false');
+                });
+
+                // Select new
+                card.classList.add('selected', 'pulse');
+                card.setAttribute('aria-checked', 'true');
+                selectedCard = card;
+                selectedPrice = parseFloat(price);
+                selectedRobux = parseInt(robux);
+
+                // Update QR section
+                updateQRSection();
+
+                // Update CTA state
+                updateCTAState();
+            }
+
+            card.addEventListener('click', selectCard);
+            card.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    selectCard();
+                }
+            });
+        });
+
+        // ==================== QR Section Update ====================
+        function updateQRSection() {
+            if (!selectedPrice) return;
+
+            // Build KHQR data string
+            const qrData = buildKHQRData(selectedPrice, selectedRobux);
+
+            // Generate QR via API
+            const qrUrl = `file:///C:/Users/PU%20IT/Downloads/khqr_moautreines_vn.svg`;
+
+            qrImage.src = qrUrl;
+            qrAmount.textContent = `$${selectedPrice.toFixed(2)}`;
+            qrRobuxLabel.textContent = `${selectedRobux} Robux`;
+
+            // Show section with animation
+            qrSection.classList.add('visible');
+
+            // Smooth scroll to QR after a brief delay
+            setTimeout(() => {
+                qrSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 200);
+        }
+
+        // Build simulated KHQR payload
+        function buildKHQRData(amount, robux) {
+            // KHQR format simulation for display purposes
+            // In production, this would be generated by Bakong/KHQR SDK
+            return [
+                'KHQR',
+                'VNCOMPANY',
+                `USD${amount.toFixed(2)}`,
+                `Roblox ${robux} Robux`,
+                'Top-Up Payment',
+                new Date().toISOString().slice(0, 10)
+            ].join('|');
+        }
+
+        // ==================== CTA Button State ====================
+        function updateCTAState() {
+            const hasPlayerId = playerIdInput.value.trim().length > 0;
+            const hasSelection = selectedCard !== null;
+
+            if (hasPlayerId && hasSelection) {
+                ctaBtn.classList.remove('disabled');
+                // Build Telegram message URL
+                const msg = encodeURIComponent(
+                    `Hello Admin,\n\n` +
+                    `I'd like to top up Roblox:\n` +
+                    `Player ID: ${playerIdInput.value.trim()}\n` +
+                    `Package: ${selectedRobux} Robux ($${selectedPrice.toFixed(2)})\n\n` +
+                    `Payment completed via KHQR. Please verify.`
+                );
+                ctaBtn.href = `https://t.me/deavanna1?text=${msg}`;
+            } else {
+                ctaBtn.classList.add('disabled');
+                ctaBtn.href = '#';
+            }
+        }
+
+        // Listen for input changes
+        playerIdInput.addEventListener('input', updateCTAState);
+
+        // CTA click guard
+        ctaBtn.addEventListener('click', (e) => {
+            if (ctaBtn.classList.contains('disabled')) {
+                e.preventDefault();
+                if (!playerIdInput.value.trim()) {
+                    showToast('Please enter your Player ID or Telegram username', 'warn');
+                    playerIdInput.focus();
+                } else if (!selectedCard) {
+                    showToast('Please select a Robux package first', 'warn');
+                }
+            }
+        });
+
+        // ==================== Floating Particles ====================
+        const particleCanvas = document.getElementById('particles-canvas');
+        const ctx = particleCanvas.getContext('2d');
+        let particles = [];
+        let animFrameId = null;
+
+        function resizeCanvas() {
+            particleCanvas.width = window.innerWidth;
+            particleCanvas.height = window.innerHeight;
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas, { passive: true });
+
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        class Particle {
+            constructor() {
+                this.reset();
+            }
+            reset() {
+                this.x = Math.random() * particleCanvas.width;
+                this.y = Math.random() * particleCanvas.height;
+                this.size = Math.random() * 1.8 + 0.5;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.speedY = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.25 + 0.05;
+                this.hue = Math.random() > 0.7 ? 30 : 220; // orange or blue tint
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x < 0 || this.x > particleCanvas.width || 
+                    this.y < 0 || this.y > particleCanvas.height) {
+                    this.reset();
+                }
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, Math.max(0.1, this.size), 0, Math.PI * 2);
+                ctx.fillStyle = `hsla(${this.hue}, 80%, 60%, ${this.opacity})`;
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        if (!prefersReducedMotion) {
+            const particleCount = Math.min(40, Math.floor(window.innerWidth / 25));
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, particleCanvas.width, particleCanvas.height);
+                particles.forEach(p => {
+                    p.update();
+                    p.draw();
+                });
+                animFrameId = requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        // ==================== Input focus glow animation ====================
+        const inputCard = document.querySelector('.input-card');
+        let focusGlowInterval = null;
+
+        playerIdInput.addEventListener('focus', () => {
+            // Subtle animated border glow is handled by CSS :focus-within
+        });
+
+        // ==================== Initial state ====================
+        // Hide QR section initially
+        qrSection.classList.remove('visible');
+
+        // Log ready state
+        console.log('VN COMPANY Top-Up Portal loaded successfully');
+    </script>
+</body>
+</html>
